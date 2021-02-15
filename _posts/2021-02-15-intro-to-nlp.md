@@ -1,7 +1,7 @@
 ---
 title: "Intro to NLP"
 date: 2021-02-15 00:18:00 -0400
-categories: [AI]
+categories: AI
 ---
 
 # Intro to Natural Language Processing(NLP)
