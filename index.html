@@ -4,7 +4,7 @@ author_profile: true
 ---
 
 <header class="site-category">
-  <ul>
+  <ul style="list-style-type:none;">
     
     {% assign pages_list = site.pages %}
     {% for node in pages_list %}
@@ -15,6 +15,6 @@ author_profile: true
         {% endif %}
       {% endif %}
     {% endfor %}
-    
-</ul>
+
+  </ul>
 </header>
