@@ -69,7 +69,7 @@ add - 1
 
 $P(x_i|c) = {count(x_i, c) + 1 \over \displaystyle \sum_{x\in V}{count(x, c) + 1}}$
 
-$\displaystyle \sum_{x\in V}{count(x, c) + 1}}$에서 1을 더해주는 이유는 계산한 확률이 0이 되지 않도록 하기 위해서. 1이 아닌 적당한 상수를 사용해줘도 된다.
+$\displaystyle \sum_{x\in V}{count(x, c) + 1}$에서 1을 더해주는 이유는 계산한 확률이 0이 되지 않도록 하기 위해서. 1이 아닌 적당한 상수를 사용해줘도 된다.
 
 ------------------------------------------------------------------
 <a name="footnote_1">1</a>: Token들이 특정 순서로 이루어진 sequence
