@@ -2,6 +2,7 @@
 title: "Intro to NLP"
 date: 2021-02-15 00:18:00 -0400
 categories: AI
+use_math: true
 ---
 
 # Intro to Natural Language Processing(NLP)
@@ -61,6 +62,14 @@ NLP는 최첨단 딥러닝 모델 및 작업을 포함하고 있다.
     + e.g., clustering news data and grouping into different subjects
 + Highly related to computational social science
     + e.g., analyzing the evolution of people’s political tendency based on social media data
+    
+
+### Laplace smoothing
+add - 1
+
+$$P(x_i|c) = {count(x_i, c) + 1 \over \displaystyle \sum_{x\in V}{count(x, c) + 1}}$$
+
+$\displaystyle \sum_{x\in V}{count(x, c) + 1}}$에서 1을 더해주는 이유는 계산한 확률이 0이 되지 않도록 하기 위해서. 1이 아닌 적당한 상수를 사용해줘도 된다.
 
 ------------------------------------------------------------------
 <a name="footnote_1">1</a>: Token들이 특정 순서로 이루어진 sequence
