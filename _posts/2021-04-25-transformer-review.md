@@ -1,6 +1,13 @@
+---
+title: "Review \"Attention Is All You Need\""
+date: 2021-02-17 00:00:00 -0400
+categories: AI
+use_math: true
+---
+
 # [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
 ## 서론
-BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Transformer를 여러번 배웠지만 정확하게 알고 있지 않은 느낌이 계속 들어서 Trnasformer 논문을 정리해보려고 한다.
+BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Transformer를 여러번 배웠지만 정확하게 알고 있지 않은 느낌이 계속 들어서 Transformer 논문을 정리해보려고 한다.
 
 ### Attention
 논문을 읽기 전, 제목에 적혀있는 **Attention**가 어떤 의미인지 확인했다.
@@ -27,3 +34,6 @@ In this work we propose the Transformer, a model architecture eschewing recurren
 To the best of our knowledge, however, the Transformer is the transduction model relying entirely on self-attention to compute representations of its input and output without using sequence-aligned RNNs or convolution.
 
 ### 3. Model Architecture
+The encoder maps an input sequence of symbol representations $(x_1, ..., x_n)$ to a sequence of continuous repesentations $z = (z_1, ..., z_n)$. Given z, the decoder then generates an output sequence $(y_1, ..., y_m)$ of symbols one element at a time. At each step the model is auto-regressive, consuming the previously generated symbols as additional input when generating the next.
+
+The Transformer follows this overall architecture using stacked self-attention and point-wise, fully connected layers for both the encoder and decoder, shown in the left and right halves of Figure 1, respectively.
