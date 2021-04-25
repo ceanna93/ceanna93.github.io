@@ -20,8 +20,6 @@ BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Tran
 ### Abstract
 We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
 
-recurrence와 convolutions를 제거하고 attention mechanism만을 이용한 방법.
-
 recurrence와 convolutions는 layer를 의미한다. recurrent layer와 convolutional layer를 제외하고 오로지 Self-Attention Layer만으로 만든 Transformer라는 의미가 된다.
 
 ### 1. Introduction
