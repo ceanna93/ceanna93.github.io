@@ -1,6 +1,6 @@
 ---
 title: "Review \"Attention Is All You Need\""
-date: 2021-02-17 00:00:00 -0400
+date: 2021-04-25 00:00:00 -0400
 categories: AI
 use_math: true
 ---
