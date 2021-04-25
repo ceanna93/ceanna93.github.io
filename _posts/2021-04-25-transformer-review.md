@@ -42,7 +42,7 @@ The Transformer follows this overall architecture using stacked self-attention a
 <summary>Encoder/Decoder</summary>
 <div markdown="1">
 
-세부 내용 Encoder and Decoder Stacks를 읽기 전, 내가 정확하게 Encoder와 Decoder에 대해 알고 있는 것인지 의문이 들었다. 문장을 입력받는 부분이 encoder, 출력하는 부분이 decoder라는 것은 알지만 RNN에서 정확히 어느 부분이 encoder인지 decoder인지 구분하라고 하면 하지 못 할 것 같다.(말로 설명하라고 해도) 그래서 **ENCODER/DECODER**도 다시 짚고 넘어가기로 했다.
+세부 내용 Encoder and Decoder Stacks를 읽기 전, 내가 정확하게 Encoder와 Decoder에 대해 알고 있는 것인지 의문이 들었다. 문장을 입력받는 부분이 encoder, 출력하는 부분이 decoder라는 것은 알지만 RNN에서 정확히 어느 부분이 encoder인지 decoder인지 구분하라고 하면 하지 못 할 것 같다. 그래서 **ENCODER/DECODER**도 다시 짚고 넘어가기로 했다.
 
 이미지를 찾아봤을 때, 아래처럼 Encoder와 Decoder는 항상 나눠져있다.
 
