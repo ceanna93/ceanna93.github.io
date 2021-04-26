@@ -5,10 +5,13 @@ categories: AI
 use_math: true
 ---
 
-[Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
+Attention Is All You Need
 ===================================
+[Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
 # 서론
 BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Transformer를 여러번 배웠지만 정확하게 알고 있지 않은 느낌이 계속 들어서 Transformer 논문을 정리해보려고 한다.
+
+##### [Attention? Attention!](https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html) 여기에도 설명이 잘 되어 있다. 영어권 사람들은 번역이 필요없으니 추가 내용이 많이 포함되어 있다.
 
 ### Attention
 논문을 읽기 전, 제목에 적혀있는 **Attention**이 어떤 의미인지 확인했다.
@@ -38,6 +41,8 @@ The encoder maps an input sequence of symbol representations $(x_1, ..., x_n)$ t
 The Transformer follows this overall architecture using stacked self-attention and point-wise, fully connected layers for both the encoder and decoder, shown in the left and right halves of Figure 1, respectively.
 
 <img src="https://user-images.githubusercontent.com/12611645/115994730-23ca9300-a613-11eb-9842-f8b83641e517.JPG" width="40%" height="30%" title="The Transformer" alt="Transformer architecture">
+
+x(vector)를 입력받아 encoder에서 z(vector)로 만들어주고, decoder에서는 z를 받아 y(vector)로 출력하게 된다. 그런데 x와 z는 1~n으로 표시되어 있는데 반해 y는 1~m으로 표시되어 있다. 번역을 하게 되면 길이가 달라질 수 있다는 점 때문에 m으로 다르게 표시했다고 추측한다.
 
 <details>
 <summary>Encoder/Decoder</summary>
@@ -73,10 +78,39 @@ The Transformer follows this overall architecture using stacked self-attention a
 
 **Decoder:** The decoder is also composed of a stack of *N* = 6 identical layers. In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. Similar to the encoder, we employ residual connections around each of the sub-layers, followed by layer normalization. We also modify the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position $i$ can depend only on the known outputs at positions less that $i$.
 
+Encoder는 그림에서 설명되어 있는 것처럼 N개의 동일한 layer로 구성되어 있고, 각 layer에는 두 개의 sub-layer가 존재한다. sub-layer는 multi-head self-attention mechanism과 position-wise fully connected feed-forward network로 구성되어 있다.
+각 sub-layer에 residual connection을 적용했는데 이 **residual connection**은 또 ResNet에서 사용한다.
+<details>
+<summary>Residual Connection</summary>
+<div markdown="1">
+  
+  Skip connection이라고도 불린다.
+  <img src="https://user-images.githubusercontent.com/12611645/116099830-534acf80-a6e7-11eb-9712-f16253953845.JPG" title="Residual Connection" alt="Residual Connection">
+  <ul>
+  <li>비선형 활성화함수를 통과하지 않고 Gradient가 직접적으로 network를 통해 흐를 수 있도록 함</li>
+  <li>ReLU는 본질적으로 비선형이기 때문에 기울기가 폭발하거나 사라</li>
+  <li>Residual Connection이 없으면 비선형 활성화 함수를 거친 활성값들에 대해 일일이 선형변환 과정을 거쳐야 하므로 loss 값이 복잡해져 overfitting이 심해짐</li>
+  </ul>
+</div>
+</details>
+그러니까 Transformer architecture에서 Input 이후와 첫 번째 Add & Norm 이후 표시한 2개의 화살표 중 하나는 Feed Forward로 들어가고, 다른 하나는 Feed Forward를 건너뛰고 다시 Add & Norm에 들어가는 부분이 Residual Connection이라는 의미가 된다.
+
+residual connection을 하기 위해 sub-layer의 output dimension을 embedding dimension과 맞춰준다. 그 후 layer normalization을 적용한다.
+
+Decoder는 Encoder와 동일하게 N개의 layer로 구성되어 있고, 각 layer에는 encoder의 2개의 sub-layer에 추가로 encoder의 결과에 multi-head attention 작업을 수행하는 세번째 sub-layer가 들어간다. Encoder와 달리 decoder는 순서가 중요하기 때문에 후속(subsequenct) 위치에 집중하지 않기 위해 self attention sub-layer를 masking을 통해 수정한다. masking은 output embeddings가 한 위치만큼 offset된다는 사실과 결합해 위치 $i$에 대한 예측이 위치 $i$보다 작은 위치에서 알려진 출력에만 의존할 수 있도록 한다.
+
+||I|am|fine|[pad]|[pad]|
+|:---:|:---:|:---:|:---:|:---:|:---:|
+|I|||||||
+|am|||||||
+|fine|||||||
+|[pad]|||||||
+|[pad]|||||||
+
 ### 3.2 Attention
 An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.
 
 <img src ="https://user-images.githubusercontent.com/12611645/116086953-5344d280-a6db-11eb-9005-b226e189034c.JPG" title="Attention" alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel.">
 
 #### 3.2.1 Scaled Dot-Product Attention
-The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\root{d_k}$, and apply a softmax function to obtain the weights on the values.
+The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.
