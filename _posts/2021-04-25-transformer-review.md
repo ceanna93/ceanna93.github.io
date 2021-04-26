@@ -5,8 +5,9 @@ categories: AI
 use_math: true
 ---
 
-# [Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
-## 서론
+[Attention Is All You Need](https://arxiv.org/pdf/1706.03762.pdf)
+===================================
+# 서론
 BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Transformer를 여러번 배웠지만 정확하게 알고 있지 않은 느낌이 계속 들어서 Transformer 논문을 정리해보려고 한다.
 
 ### Attention
@@ -16,27 +17,27 @@ BERT, ELECTRA를 접하면서 Transformer라는 단어를 많이 접했다. Tran
 
 어텐션(attention): 입력 시퀀스가 길어지면 출력 시퀀스의 정확도가 떨어지는 것을 보정해주기 위한 기법
 
-## 논문
-### Abstract
+# 논문
+## Abstract
 We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.
 
 recurrence와 convolutions는 layer를 의미한다. recurrent layer와 convolutional layer를 제외하고 오로지 Self-Attention Layer만으로 만든 Transformer라는 의미가 된다.
 
-### 1. Introduction
+## 1. Introduction
 Attention mechanisms have become an integral part of compelling sequence modeling and trasduction models in various tasks, allowing modeling of dependencies without regard to their distnace in the input or output sequences. In all but a few cases, however, such attention mechanisms are used in conjunction with a recurrent network.
 In this work we propose the Transformer, a model architecture eschewing recurrence and instead relying entirely on an attention mechanism to draw gloabl dependencies between input and output.
 
 기존의 Attention mechanisms이 사용됐던 한계에 대해 설명하고 Transformer를 제안하고 있다.
 
-### 2. Background
+## 2. Background
 To the best of our knowledge, however, the Transformer is the transduction model relying entirely on self-attention to compute representations of its input and output without using sequence-aligned RNNs or convolution.
 
-### 3. Model Architecture
+## 3. Model Architecture
 The encoder maps an input sequence of symbol representations $(x_1, ..., x_n)$ to a sequence of continuous repesentations $z = (z_1, ..., z_n)$. Given z, the decoder then generates an output sequence $(y_1, ..., y_m)$ of symbols one element at a time. At each step the model is auto-regressive, consuming the previously generated symbols as additional input when generating the next.
 
 The Transformer follows this overall architecture using stacked self-attention and point-wise, fully connected layers for both the encoder and decoder, shown in the left and right halves of Figure 1, respectively.
 
-<img src="https://user-images.githubusercontent.com/12611645/115994730-23ca9300-a613-11eb-9842-f8b83641e517.JPG" width="40%" height="30%" title="The Transformer diagram" alt="Transformer architecture">
+<img src="https://user-images.githubusercontent.com/12611645/115994730-23ca9300-a613-11eb-9842-f8b83641e517.JPG" width="40%" height="30%" title="The Transformer" alt="Transformer architecture">
 
 <details>
 <summary>Encoder/Decoder</summary>
@@ -67,7 +68,15 @@ The Transformer follows this overall architecture using stacked self-attention a
 </div>
 </details>
 
-#### 3.1 Encoder and Decoder Stacks
+### 3.1 Encoder and Decoder Stacks
 **Encoder:** The encoder is composed of a stack of *N* = 6 identical layers. Each layer has two sub-layers. The first is a multi-head self-attention mechanism, and the second is a simple, position-wise fully connected feed-forward network. We employ a residual connection around each sub-layers is LayerNorm($x$ + Sublayer($x$)), where Sublayer($x$) is the function implemented by the sub-layer itself. To facilitate these residual connections, all sub-layers in the model, as well as the embedding layers, produce outputs of dimension $d_{model}$ = 512
 
 **Decoder:** The decoder is also composed of a stack of *N* = 6 identical layers. In addition to the two sub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head attention over the output of the encoder stack. Similar to the encoder, we employ residual connections around each of the sub-layers, followed by layer normalization. We also modify the self-attention sub-layer in the decoder stack to prevent positions from attending to subsequent positions. This masking, combined with fact that the output embeddings are offset by one position, ensures that the predictions for position $i$ can depend only on the known outputs at positions less that $i$.
+
+### 3.2 Attention
+An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.
+
+<img src ="https://user-images.githubusercontent.com/12611645/116086953-5344d280-a6db-11eb-9005-b226e189034c.JPG" title="Attention" alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel.">
+
+#### 3.2.1 Scaled Dot-Product Attention
+The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\root{d_k}$, and apply a softmax function to obtain the weights on the values.
