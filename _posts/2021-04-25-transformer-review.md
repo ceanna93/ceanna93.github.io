@@ -101,11 +101,13 @@ Decoder는 Encoder와 동일하게 N개의 layer로 구성되어 있고, 각 lay
 
 ||I|am|fine|[pad]|[pad]|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-|I|||||||
-|am|||||||
-|fine|||||||
+|I||X|X|X|X|X|
+|am|||X|X|X|X|
+|fine||||X|X|X|
+|[pad]|||||X|X|
 |[pad]|||||||
-|[pad]|||||||
+
+위 표에서 X 표시된 부분이 masking된 부분으로 Transformer에서 i번째 값을 예측할 때 앞으로 나오게 될 단어는 가려 예측에 포함되지 않도록 한다.
 
 ### 3.2 Attention
 An attention function can be described as mapping a query and a set of key-value pairs to an output, where the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.
