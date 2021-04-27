@@ -42,7 +42,7 @@ The Transformer follows this overall architecture using stacked self-attention a
 
 <img src="https://user-images.githubusercontent.com/12611645/115994730-23ca9300-a613-11eb-9842-f8b83641e517.JPG" width="40%" height="30%" title="The Transformer" alt="Transformer architecture">
 
-x(vector)를 입력받아 encoder에서 z(vector)로 만들어주고, decoder에서는 z를 받아 y(vector)로 출력하게 된다. 그런데 x와 z는 1~n으로 표시되어 있는데 반해 y는 1~m으로 표시되어 있다. 번역을 하게 되면 길이가 달라질 수 있다는 점 때문에 m으로 다르게 표시했다고 추측한다.
+x(vector)를 입력받아 encoder에서 z(vector)로 만들어주고, decoder에서는 z를 받아 y(vector)로 출력하게 된다. 그런데 x와 z는 1\~n으로 표시되어 있는데 반해 y는 1\~m으로 표시되어 있다. 번역을 하게 되면 길이가 달라질 수 있다는 점 때문에 m으로 다르게 표시했다고 추측한다.
 
 <details>
 <summary>Encoder/Decoder</summary>
@@ -138,11 +138,18 @@ The input consists of queries and keys of dimension $d_k$, and values of dimensi
 
 $$ Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V $$
 
-The two most commonly used attention functions are additive attention, and dot-product (multi-plicative) attention. Dot-product attention is identical to our algorithm, except for the scaling factor of $\frac{1}{\sqrt{d_k}}$. Additivie attention computes the compatibility function using a feed-forward network with a single hidden layer. While the two are similar in theoretical complexity, dot-product attention is much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code.
+The two most commonly used attention functions are additive attention, and dot-product (multi-plicative) attention. Dot-product attention is identical to our algorithm, except for the scaling factor of $\frac{1}{\sqrt{d_k}}$. Additive attention computes the compatibility function using a feed-forward network with a single hidden layer. While the two are similar in theoretical complexity, dot-product attention is much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code.
 
 While for small values of $d_k$ the two mechanisms perform similarly, additive attention outperforms dot product attention without scaling for large values of $d_k$. We suspect that for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients. To counteract this effect, we scale the dot products by $\frac{1}{\sqrt{d_k}}$.
 
 input은 $d_k$ 차원의 query, key vector와 $d_v$ 차원의 values vector로 이루어져 있다. Transformer는 모든 query와 key에 대해 dot-products를 계산하고 values의 가중치를 구하기 위해 query와 key에 dot-products를 구한 값을 $\sqrt{d_k}$로 나눠주고 softmax 함수를 적용한다.
 
 Figure 2에 left를 보면 잘 설명되어 있는데 Q와 K를 dot-product 해주고, $\sqrt{d_k}$로 Scale을 해준다는 의미다.
+
+가장 많이 사용되는 두 가지 attention은 additive attention과 dot-product attention이다.
+- Dot-product attention: scaling factor가 $\frac{1}{\sqrt{d_k}}$인 점만 제외하면 Transformer에서 사용하는 알고리즘과 동일하다.
+- Additive attention: 하나의 hidden layer가 포함된 feed-forward network를 이용해 compatibility function을 계산한다.
+위 두 attention은 이론상 복잡성이 비슷하지만 dot-product attention은 highly optimized된 행렬 곱셈 코드를 사용하여 구현할 수 있기 때문에 additive attention에 비해 훨씬 빠르고 공간 효율이 좋다.
+
+$d_k$ 값이 작은 경우 두 attention의 성능은 비슷하지만 additive attention은 $d_k$에 대한 scaling을 하지 않기 때문에 dot product에 비해 성능이 좋게 나온다. $d_k$의 값이 큰 경우 내적의 크기가 커져 softmax 함수에서 극히 작은 기울기로 계산되기 때문이라고 생각하여 이 효과를 막기 위해 내적을 $\frac{1}{\sqrt{d_k}}$ 값으로 scaling 해준다.
 
