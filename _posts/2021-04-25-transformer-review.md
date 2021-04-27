@@ -154,12 +154,23 @@ Figure 2에 left를 보면 잘 설명되어 있는데 Q와 K를 dot-product 해�
 $d_k$ 값이 작은 경우 두 attention의 성능은 비슷하지만 additive attention은 $d_k$에 대한 scaling을 하지 않기 때문에 dot product에 비해 성능이 좋게 나온다. $d_k$의 값이 큰 경우 내적의 크기가 커져 softmax 함수에서 극히 작은 기울기로 계산되기 때문이라고 생각하여 이 효과를 막기 위해 내적을 $\frac{1}{\sqrt{d_k}}$ 값으로 scaling 해준다.
 
 #### 3.2.2 Multi-Head Attention
-Instead of performing a single attention function with $d_{model}$-dimensional keys, values and queries, we found it beneficial to linearly project the queries, keys and values $h$ times with differenct, learned linear projections to $d_k$. $d_k$ and $d_v$ dimensions, respectively. On each of these projected versions of queries, keys and values we then perform the attention function in parallel, yielding $d_v$-dimensional output values. Theses are concatenated and once again projected, resulting in the final values, as depicted in Figure 2.
+Instead of performing a single attention function with $d_{model}$-dimensional keys, values and queries, we found it beneficial to linearly project the queries, keys and values $h$ times with differenct, learned linear projections to $d_k$, $d_k$ and $d_v$ dimensions, respectively. On each of these projected versions of queries, keys and values we then perform the attention function in parallel, yielding $d_v$-dimensional output values. Theses are concatenated and once again projected, resulting in the final values, as depicted in Figure 2.
 
 Multi-head attention allows the model to jointly attend to information from different representation subspaces at different positions. With a single attention head, averaging inhibits this.
 
-$ MultiHead(Q, K, V) = Concat(head_1, ..., head_h)W^O
-        where head_i = Attention(QW^Q_i, KW^k_i, VW^V_i) $
+$ MultiHead(Q, K, V) = Concat(head_1, ..., head_h)W^O$
+        where $head_i = Attention(QW^Q_i, KW^k_i, VW^V_i) $
         
-Where the projections are parameter matrices $W^Q_i \in R^{d_{model} \times d_k}, W^K_i \in R^{d_{model} \times d_k}, W^V_i \in R^{d_model \times d_v}$ and $W^O \in R^{hd_v \times d_{model}}.
+Where the projections are parameter matrices $W^Q_i \in R^{d_{model} \times d_k}, W^K_i \in R^{d_{model} \times d_k}, W^V_i \in R^{d_model \times d_v}$ and $W^O \in R^{hd_v \times d_{model}}$.
 
+In this work we employ $h$ = 8 parallel attention layers, or head. For each of these we use $d_k = d_v = d_{model} / h = 64$. Due to the reduced dimension of each head, the total computational cost is similar to that of single-head attention with full dimensionality.
+
+$d_{model}$-dimensional의 keys, values, queries를 하나의 attention으로 처리하는 것보다 queries, keys, values를 $d_k$로 학습된 linearly project을 각각 $h$번 linear project하는 것이 유리하다.
+
+각 projected된 queires, keys, values들을 병렬로 attention을 수행하여 $d_v$ 차원의 output 값을 산출한다. Figure2를 보면 concat되고 다시 project되어 최종 값이 생성되는 것을 확인할 수 있다.
+
+Multi-head attention을 사용하면 모델이 서로 다른 positions에 있는 서로 다른 representation subspaces의 정보에 공동으로 집중할 수 있다. Single attention head는 averaging이 이를 억제한다.
+
+수식에서 $MultiHead(Q, K, V)$는 각각의 $head_i$를 concat한 값과 $W^O$를 곱해준다. 이 때 각각의 vector를 곱해주는 가중치는 별개로 $W^Q_i \in R^{d_{model} \times d_k}, W^K_i \in R^{d_{model} \times d_k}, W^V_i \in R^{d_model \times d_v}$ and $W^O \in R^{hd_v \times d_{model}}$로 정의되어 있다. 각기 다른 Weight를 사용하게 되는 것이다. W^O는 output에 대한 parameter matrix.
+
+각 head의 크기가 줄어들기 때문에 총 계산 비용은 full dimensionality의 single-head attention(3.2.2 가장 첫 문장에 적은 $d_{model}$-dimensional의 keys, values, queries를 하나의 attention으로 처리하는 것)과 비슷하다.
