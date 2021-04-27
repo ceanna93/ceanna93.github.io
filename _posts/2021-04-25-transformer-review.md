@@ -114,5 +114,31 @@ An attention function can be described as mapping a query and a set of key-value
 
 <img src ="https://user-images.githubusercontent.com/12611645/116086953-5344d280-a6db-11eb-9005-b226e189034c.JPG" title="Attention" alt="(left) Scaled Dot-Product Attention. (right) Multi-Head Attention consists of several attention layers running in parallel.">
 
+Attention 함수는 query와 key-value(query, key, value는 전부 vector)를 mapping 해준다. 출력은 values의 가중 합계로 계산되는데 각 값에 할당된 가중치는 query와 해당하는 key의 **compatibility function**에 의해 계산된다.
+
+Compatibility function은 호환 함수라고 번역되는데 구글링을 해봐도 따로 나오는 관련 자료는 없어 보인다. 
+<details>
+<summary>Linear compatibility function</summary>
+<div markdown="1">
+  
+  선형 호환성 함수-호환성 함수가 아니라 선형 호환성 함수이지만-란 기계 학습 프로그램 (또는 유사한 기술)이 훈련 입력을 검사하여 분류 문제에서 identity를 해결하려고 시도하는 구조적 예측 작업의 일부일 수 있다.
+  이러한 종류의 구성은 인공 지능을 빠른 클립으로 혁신하는 신경망 모델의 일반적인 프레임워크 내에서 의미가 있다.
+  
+  선형 호환성 함수는 시스템이 구조화된 생산 작업을 달성하기 위해 이러한 입력 및 출력의 결합된 속성을 인코딩하는 입력/출력 쌍의 공동 피쳐 표현에 유용할 수 있다. 시스템은 주어진 입력 또는 입력 세트에 대해 가장 호환 가능한 결과를 예측할 수 있다. 이러한 유형의 알고리즘 및 수학적 구성은 감독된 머신 러닝에서 구조화 된 예측 결괄르 도출하기 위해 트리 또는 의사 결정 트리 또는 다른 모델을 구문 분석하는 데 적용될 수 있다. 일반적으로 레이블은 프로그램이 식별 결과를 달성하는 데 도움이 된다.
+  
+  레이블의 유용성은 선형 호환성 함수 및 구조적 예측의 다른 측면에 적용할 때 특히 분명해 보인다.
+  
+  글 자체가 번역한 것 같다. 설명을 읽어도 compatibility function에 대해 잘 파악되지는 않는다. 이후 알게 된 내용이 있으면 추가할 예정.
+  
+</div>
+</details>
+
 #### 3.2.1 Scaled Dot-Product Attention
 The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.
+
+$
+
+input은 $d_k$ 차원의 query, key vector와 $d_v$ 차원의 values vector로 이루어져 있다. Transformer는 모든 query와 key에 대해 dot-products를 계산하고 values의 가중치를 구하기 위해 query와 key에 dot-products를 구한 값을 $\sqrt{d_k}$로 나눠주고 softmax 함수를 적용한다.
+
+Figure 2에 left를 보면 잘 설명되어 있는데 Q와 K를 dot-product 해주고, $\sqrt{d_k}$로 Scale을 해준다는 의미다.
+
