@@ -136,7 +136,11 @@ Compatibility function은 호환 함수라고 번역되는데 구글링을 해�
 #### 3.2.1 Scaled Dot-Product Attention
 The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.
 
-$
+$$ Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V $$
+
+The two most commonly used attention functions are additive attention, and dot-product (multi-plicative) attention. Dot-product attention is identical to our algorithm, except for the scaling factor of $\frac{1}{\sqrt{d_k}}$. Additivie attention computes the compatibility function using a feed-forward network with a single hidden layer. While the two are similar in theoretical complexity, dot-product attention is much faster and more space-efficient in practice, since it can be implemented using highly optimized matrix multiplication code.
+
+While for small values of $d_k$ the two mechanisms perform similarly, additive attention outperforms dot product attention without scaling for large values of $d_k$. We suspect that for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients. To counteract this effect, we scale the dot products by $\frac{1}{\sqrt{d_k}}$.
 
 input은 $d_k$ 차원의 query, key vector와 $d_v$ 차원의 values vector로 이루어져 있다. Transformer는 모든 query와 key에 대해 dot-products를 계산하고 values의 가중치를 구하기 위해 query와 key에 dot-products를 구한 값을 $\sqrt{d_k}$로 나눠주고 softmax 함수를 적용한다.
 
