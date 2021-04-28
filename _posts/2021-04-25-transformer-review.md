@@ -174,3 +174,18 @@ Multi-head attention을 사용하면 모델이 서로 다른 positions에 있는
 수식에서 $MultiHead(Q, K, V)$는 각각의 $head_i$를 concat한 값과 $W^O$를 곱해준다. 이 때 각각의 vector를 곱해주는 가중치는 별개로 $W^Q_i \in R^{d_{model} \times d_k}, W^K_i \in R^{d_{model} \times d_k}, W^V_i \in R^{d_model \times d_v}$ and $W^O \in R^{hd_v \times d_{model}}$로 정의되어 있다. 각기 다른 Weight를 사용하게 되는 것이다. W^O는 output에 대한 parameter matrix.
 
 각 head의 크기가 줄어들기 때문에 총 계산 비용은 full dimensionality의 single-head attention(3.2.2 가장 첫 문장에 적은 $d_{model}$-dimensional의 keys, values, queries를 하나의 attention으로 처리하는 것)과 비슷하다.
+
+**MultiheadAttention**
+- [pytorch MultiheadAttention Doc](https://pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention.html#torch.nn.MultiheadAttention)
+- [pytorch MultiheadAttention sourcecode](https://pytorch.org/docs/stable/_modules/torch/nn/modules/activation.html#MultiheadAttention)
+- [huggingface transformer MultiHeadAttention sourcecode](https://huggingface.co/transformers/v1.1.0/_modules/pytorch_transformers/modeling_xlm.html)
+
+두 코드의 차이가 무엇인지 확인해봤는데 [예전에는 Pytorch의 공식 MultiheadAttention class가 없었던 것](https://github.com/huggingface/transformers/issues/1451)처럼 보인다.
+
+#### 3.2.3 Applications of Attention in our Model
+The Transformer uses multi-head attention in three different ways:
+- In "encoder-decoder attention" layers, the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder. This allows every position in the decoder to attend over all input sequence. This mimics the typical encoder-decoder attention mechanisms in sequence-to-sequence models.
+- The encoder contains self-attention layers. In a self-attention layer all of the keys, values and queries come from the same place, in this case, the output of the previous layer in the encoder. Each position in the encoder can attend to all positions in the previous layer of the encoder.
+- Similarly, self-attention layers in the decoder allow each position in the decoder to attend to all positions in the decoder up to and including that position. We need to prevent leftward information flow in the decoder to preserve the auto-regressive property. We implement this inside of scaled dot-product attention by masking out (setting to - $\infty$) all values in the input of the softmax which correspond to illegal connections.
+
+Transformer는 multi-head attention을 세가지 방법으로 사용한다.
