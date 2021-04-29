@@ -189,3 +189,33 @@ The Transformer uses multi-head attention in three different ways:
 - Similarly, self-attention layers in the decoder allow each position in the decoder to attend to all positions in the decoder up to and including that position. We need to prevent leftward information flow in the decoder to preserve the auto-regressive property. We implement this inside of scaled dot-product attention by masking out (setting to - $\infty$) all values in the input of the softmax which correspond to illegal connections.
 
 Transformer는 multi-head attention을 세가지 방법으로 사용한다.
+- "encoder-decoder attention" layer에서 queries는 이전의 decoder layer에서 생성되고, memory keys와 values는 encoder의 output에서 생성된다. decoder의 모든 position에서 모든 input sequence(encoder의 output)에 집중(attend)하게 된다. sequence-to-sequence 모델의 전형적인 encoder-decoder attention mechanism을 흉내낸 것이다. 아래 그림에서 Multi-Head Attention 부분을 설명하고 있다.
+
+<img src="https://user-images.githubusercontent.com/12611645/116555664-9b603100-a937-11eb-88f8-c5c0639c0de7.JPG" width="40%" height="30%" title="Encoder-Decoder attention layer" alt="Encoder Decoder attention layer">
+
+- encoder는 self-attention layers를 포함하고 있다. self-attention layer에서 모든 keys, values와 queries는 같은 곳-이 경우 encoder의 이전 layer의 output-에서 생성된다. encoder의 각 position은 encoder의 이전 layer의 모든 위치에 attend 할 수 있다. 아래 그림에서 Multi-Head Attention에 들어가는 keys, values와 queries는 이전 layer인, Input Embedding에서 Positional Encoding을 거친 output 값이 된다.
+
+<img src="https://user-images.githubusercontent.com/12611645/116556923-f2b2d100-a938-11eb-90a9-dfc96913045f.JPG" width="40%" height="30%" title="Encoder self attention layer" alt="Encoder self attention layer">
+
+- decoder의 self-attention도 비슷하게 decoder의 각 위치(position)이 해당 위치를 포함하여 decoder의 모든 위치에 집중(attend)할 수 있게 한다. auto-regressive 속성을 유지하기 위해 decoder의 leaftward 정보 흐름을 방해해야 한다. illegal connections에 해당하는 softmax의 입력에서 모든 값을 masking(setting to - $\infty$)하여 scaled dop-product(내적)을 적용한다.
+decoder에서는 self attention을 할 때 3.1의 masking된 부분처럼 참조하면 안 되는 값(X 값들: 미래를 보고 미래를 예측하는 경우)을 제외해주어야 한다. Decoder의 앞선 시점들의 hidden layer들만 사용할 수 있게 만들어야 한다는 의미. illegal connection은 Mask를 통해 -inf 값을 주게 되면 softmax에서 값이 0이 되어 attend를 못하도록 구현하고 있다고 한다.
+
+<img src="https://user-images.githubusercontent.com/12611645/116561132-fcd6ce80-a93c-11eb-832e-17782b5c6610.JPG" width="40%" height="30%" title="Decoder self attention layer" alt="Decoder self attention layer with mask">
+
+### 3.3 Position-wise Feed-Forward Networks
+In addition to attention sub-layers, each of the layers in our encoder and decoder contains a fully connected feed-forward network, which is applied to each position separately and identically. This consists of two linear transformations with a ReLU activation in between.
+
+$ FFN(x) = max(0, xW_1 + b_1)W_2 + b_2 $
+
+While the linear transformations are the same across different positions, they use different parameters from layer to layer. Another way of describing this is as two convolutions with kernel size 1. The dimensionality of input and output is $d_{model} = 512$, and the inner-layer has dimensionality $d_{ff} = 2048$".
+
+attention sub-layer에 추가로 encoder와 decoder의 각 layer는 각 위치(position)에 개별적으로 동일하게 적용된 fully connected feedd-forward network를 포함하고 있다. 사이에 ReLU 활성 함수를 둔 두 개의 linear transformations로 구성되어 있다.
+
+<img src="https://user-images.githubusercontent.com/12611645/116564547-0c0b4b80-a940-11eb-91b7-2a4e07c3b995.JPG" width="40%" height="30%" title="postiion wide feed forward" alt="postiion wide feed forward">
+[이미지 출처](https://heung-bae-lee.github.io/2020/01/21/deep_learning_10/)
+
+위 그림에서 잘 설명해주는데 초록색 박스의 가로가 문장 길이, 세로가 One-hot vector를 크기로 갖는 행렬이라고 글에서 설명해준다.
+
+식에서 $max(0, xW_1 + b_1)$ 부분은 $x$가 input, $W_1$은 첫 번째 Fully-Connected Layer, $W_2$가 두 번째 Fully-Connected Layer가 된다고 생각한다. linear transformation을 표현할 때 $Wx + b$의 형태고 $max(0, f_{bef})의 표현은 ReLU 활성함수 표현식이다.
+
+linear transformations는 다른 위치에서는 동일하지만 layer마다 다른 매개 변수를 사용한다. 이를 설명하는 또 다른 방법은 input과 output의 차원은 $d_{model} = 512$이고 inner-layer의 차원은 $d_{ff} = 2047$인 상태에서 커널 크기가 1인 convolution을 두 번 수행한 것.
