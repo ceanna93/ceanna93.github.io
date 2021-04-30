@@ -124,7 +124,7 @@ Generator를 거쳐온 모든 토큰의 값이 real인지, 아닌지 sigmoid 함
 </div>
 </details>
 
-#### Combined loss
+### Combined loss
 <img src="https://user-images.githubusercontent.com/12611645/116701411-d713fd00-aa02-11eb-98ba-f5dfab85b2d7.JPG">
 
 Although similar to the training objective of a GAN, there are several key differences.
