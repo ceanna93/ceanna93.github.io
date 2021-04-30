@@ -194,7 +194,7 @@ We explore other training algorithms for ELECTRA, although these did not end up 
 <img src="https://user-images.githubusercontent.com/12611645/116702299-e0ea3000-aa03-11eb-8ff9-6609424512e1.JPG">
 
 <details>
-<summary>Generator 설명</summary>
+<summary>MODEL EXTENSIONS 설명</summary>
 <div markdown="1">
 ELECTRA에서는 성능을 높이기 위해 model에 몇 가지 확장을 했는데 이 실험에서는 BERT-Base와 동일한 모델 크기와 training data를 사용했다고 나와있다.
 
