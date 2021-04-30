@@ -134,7 +134,7 @@ First, if the generator happens to generate the correct token, that token is con
 we found this formulation to moderately improve results on downstream tasks. More importantly, the generator is trained with maximum likelihood rather than begin trained adversarially to fool the discriminator.
 
 <details>
-<summary>Discriminator 설명</summary>
+<summary>Method 설명</summary>
 <div markdown="1">
 LossMLM과 LossDiscriminator에 하이퍼파라미터 람다를 곱한 가중합을 최소화하는 것이 최종 손실함수가 된다.
   
