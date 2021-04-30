@@ -233,6 +233,6 @@ In this work, we use sine and cosine functions of different frequencies:
 $PE_{(pos, 2i)} = sin(pos/10000^{2i/d_{model}})$
 $PE_{(pos, 2i+1)} = cos(pos/10000^{2i/d_{model}})$
 
-where $pos$ is the position and $i$ is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2$\pi$ to 10000 $\dot$ 2$\pi$. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
+where $pos$ is the position and $i$ is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2$\pi$ to 10000 $\cdot$ 2$\pi$. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
 
 We also experimented with using learned positional embeddings instead, and found that the two versions produced nearly identical results. We chose the sinusoidal version becasue it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training.
