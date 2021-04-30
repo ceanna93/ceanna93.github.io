@@ -216,7 +216,7 @@ attention sub-layer에 추가로 encoder와 decoder의 각 layer는 각 위치(p
 
 위 그림에서 잘 설명해주는데 초록색 박스의 가로가 문장 길이, 세로가 One-hot vector를 크기로 갖는 행렬이라고 글에서 설명해준다.
 
-식에서 $max(0, xW_1 + b_1)$ 부분은 $x$가 input, $W_1$은 첫 번째 Fully-Connected Layer, $W_2$가 두 번째 Fully-Connected Layer가 된다고 생각한다. linear transformation을 표현할 때 $Wx + b$의 형태고 $max(0, f_{bef})의 표현은 ReLU 활성함수 표현식이다.
+식에서 $max(0, xW_1 + b_1)$ 부분은 $x$가 input, $W_1$은 첫 번째 Fully-Connected Layer, $W_2$가 두 번째 Fully-Connected Layer가 된다고 생각한다. linear transformation을 표현할 때 $Wx + b$의 형태고 $max(0, f_{bef})$의 표현은 ReLU 활성함수 표현식이다.
 
 linear transformations는 다른 위치에서는 동일하지만 layer마다 다른 매개 변수를 사용한다. 이를 설명하는 또 다른 방법은 input과 output의 차원은 $d_{model} = 512$이고 inner-layer의 차원은 $d_{ff} = 2047$인 상태에서 커널 크기가 1인 convolution을 두 번 수행한 것.
 
