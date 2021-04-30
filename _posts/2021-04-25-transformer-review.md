@@ -219,3 +219,20 @@ attention sub-layer에 추가로 encoder와 decoder의 각 layer는 각 위치(p
 식에서 $max(0, xW_1 + b_1)$ 부분은 $x$가 input, $W_1$은 첫 번째 Fully-Connected Layer, $W_2$가 두 번째 Fully-Connected Layer가 된다고 생각한다. linear transformation을 표현할 때 $Wx + b$의 형태고 $max(0, f_{bef})의 표현은 ReLU 활성함수 표현식이다.
 
 linear transformations는 다른 위치에서는 동일하지만 layer마다 다른 매개 변수를 사용한다. 이를 설명하는 또 다른 방법은 input과 output의 차원은 $d_{model} = 512$이고 inner-layer의 차원은 $d_{ff} = 2047$인 상태에서 커널 크기가 1인 convolution을 두 번 수행한 것.
+
+### 3.4 Embeddings and Softmax
+Similarly to other sequence transduction models, we learned embeddings to convert the input tokens and output tokens to verctors of dimension $d_{model}$. We also use the usual learned linear transformation and softmax function to convert the decoder output to predicted next-token probabilities. In our model, we share the same weight matrix between the two embedding layers and the pre-softmax linear transformation. In the embedding layers, we muliply those weights by $\sqrt{d_{model}}$.
+
+다른 sequence 모델과 마찬가지로 입력 토큰과 출력 토큰을 $d_{model}$ 차원의 vector로 변환하는 embedding을 배웠다. 또한 일반적인 linear transformation과 softmax 함수를 사용하여 decoder의 출력을 예측된 next-token 확률로 변환한다. Transformer에서는 두 개의 embedding layer와 pre-softmax linear transformation 간에 동일한 가중치 행렬을 공유한다. embedding layer에서 $\sqrt{d_{model}}$로 가중치들을 곱해준다.
+
+### 3.5 Positional Encoding
+Since our model contains no recurrence and no convolution, in order for the model to make use of the order of the sequence, we must inject some information about the releative or absolute position of the tokens in the sequence. To this end, we add "positional encodings" to the input embeddings at the bottoms of the encoder and decoder stacks. The positional encodings have the same dimension $d_{model}$ as the embeddings, so that the two can be summed. There are many choices of positional encodings.
+
+In this work, we use sine and cosine functions of different frequencies:
+
+$PE_{(pos, 2i)} = sin(pos/10000^{2i/d_{model}})$
+$PE_{(pos, 2i+1)} = cos(pos/10000^{2i/d_{model}})$
+
+where $pos$ is the position and $i$ is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2$\pi$ to 10000 $\dot$ 2$\pi$. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
+
+We also experimented with using learned positional embeddings instead, and found that the two versions produced nearly identical results. We chose the sinusoidal version becasue it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training.
