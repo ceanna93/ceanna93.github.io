@@ -236,3 +236,20 @@ $PE_{(pos, 2i+1)} = cos(pos/10000^{2i/d_{model}})$
 where $pos$ is the position and $i$ is the dimension. That is, each dimension of the positional encoding corresponds to a sinusoid. The wavelengths form a geometric progression from 2$\pi$ to 10000 $\cdot$ 2$\pi$. We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.
 
 We also experimented with using learned positional embeddings instead, and found that the two versions produced nearly identical results. We chose the sinusoidal version becasue it may allow the model to extrapolate to sequence lengths longer than the ones encountered during training.
+
+| Layer Type | Complexity per Layer | Sequential Operations | Maximum Path Length |
+|:----------:|:--------------------:|:---------------------:|:-------------------:|
+|Self-Attention | $O(n^2 · d)$ | $O(1)$ | $O(1)$ |
+|Recurrent | $O(n · d^2)$ | $O(n)$ | $O(n)$ |
+|Convolutional | $O(k · n · d^2)$ | $O(1)$ | $O(log_k(n))$ |
+|Self-Attention (restricted) | $O(r · n · d)$ | $O(1)$ | $O(n/r)$ |
+Table 1: Maximum path lengths, per-layer complexity and minimum number of sequential operations for different layer types. n is the sequence length, d is the representation dimension, k is the kernel size of convolutions and r the size of the neighborhood in restricted self-attention.
+
+
+Transformer에는 recurrence와 convolution이 없기 때문에 sequence 순서를 사용하기 위해선 sequence token의 상대 또는 절대 위치의 정보를 넣어줘야 한다. 이를 위해 encoder와 decoder 하단의 stack에 있는 input embeddings에 "positional encodings"을 추가해준다. positional encodings는 embedding와 동일한 차원인 $d_{model}$ 차원을 가지기 때문에 둘을 더해줄 수 있다. positional encodings로 선택할 수 있는 방법이 많은데 자세한 내용은 논문.
+
+논문에서는 다른 주기의 sine, cosine 함수를 사용한다.
+
+식에서 $pos$는 위치, $i$는 차원이다. positional encoding의 각 차원은 sinusoid에 해당한다. 파장은 2$\pi$에서 10000 $\cdot$2 $\pi$까지 기하학적 진행을 형성한다. 고정된 offset $k$에서 $PE_{pos+k}$는 $PE_{pos}$의 선형 함수(linear function)로 표현할 수 있기 때문에 이 함수가 모델이 상대 위치로 쉽게 배울 수 있다고 판단해 이 함수를 선택했다고 설명한다.
+
+learned positional embedding를 대신 사용하여 시험했을 때 두 버전이 거의 동일한 결과를 출력했다. sinusoidal 버전을 선택한 이유는 모델이 훈련 중에 만나는 길이보다 긴 sequece 길이를 extrapolate([보외법](https://ko.wikipedia.org/wiki/%EB%B3%B4%EC%99%B8%EB%B2%95))할 수 있기 때문이다.
