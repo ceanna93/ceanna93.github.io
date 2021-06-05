@@ -1,5 +1,5 @@
 ---
-title: "Review Towards an Appropriate Query, Key, and Value Computation for Knowledge Tracing"
+title: "Review \"Towards an Appropriate Query, Key, and Value Computation for Knowledge Tracing\""
 date: 2021-06-05 00:00:00 -0400
 categories: AI
 use_math: true
